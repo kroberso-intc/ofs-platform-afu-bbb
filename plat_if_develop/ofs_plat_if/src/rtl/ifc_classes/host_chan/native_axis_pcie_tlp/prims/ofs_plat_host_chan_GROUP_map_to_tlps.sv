@@ -303,15 +303,15 @@ module ofs_plat_host_chan_@group@_map_to_tlps
     assign arb_req[0] = tx_mmio_tlps.tvalid;
     // For FIMs with a separate read stream, no read arbitration is required
     assign arb_req[1] = (FIM_HAS_SEPARATE_READ_STREAM ? 1'b0 : tx_rd_tlps.tvalid && allow_rd_tlps);
-    assign arb_req[2] = tx_wr_tlps.tvalid && allow_wr_tlps &&
-                        // Block write traffic when reads are blocked due to TLP
-                        // tag exhaustion. Writes lack back-pressure since they
-                        // don't require tags. Allowing writes to proceed when
-                        // reads are blocked causes a significant imbalance when
-                        // read and write streams are both active. Without back-
-                        // pressure on writes, the FIM pipeline fills with only
-                        // write requests.
-                        rd_cpld_tag_available;
+    assign arb_req[2] = tx_wr_tlps.tvalid && allow_wr_tlps; // &&
+                        // // Block write traffic when reads are blocked due to TLP
+                        // // tag exhaustion. Writes lack back-pressure since they
+                        // // don't require tags. Allowing writes to proceed when
+                        // // reads are blocked causes a significant imbalance when
+                        // // read and write streams are both active. Without back-
+                        // // pressure on writes, the FIM pipeline fills with only
+                        // // write requests.
+                        // rd_cpld_tag_available;
 
     assign arb_grant_mmio = arb_grant[0] ||
                             ((arb_state == ARB_LOCK_MMIO) && to_fiu_tx_st.tready && tx_mmio_tlps.tvalid);
